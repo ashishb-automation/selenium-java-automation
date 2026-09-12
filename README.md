@@ -1,108 +1,111 @@
-# Selenium Cucumber Automation Framework
+# Selenium Java Automation Portfolio
 
-This project is a Java-based UI automation framework built with:
+[![Selenium Cucumber Tests](https://github.com/ashishbsdet-sketch/selenium-java-automation/actions/workflows/selenium.yml/badge.svg)](https://github.com/ashishbsdet-sketch/selenium-java-automation/actions/workflows/selenium.yml)
 
-- Java 17
-- Maven
-- Selenium WebDriver
-- Cucumber
-- JUnit Platform
-- Page Object Model (POM)
+A Java 17 UI automation framework for the Sauce Demo e-commerce application. It combines Selenium WebDriver, Cucumber and JUnit Platform to express customer behaviour in readable Gherkin while keeping browser logic maintainable.
 
-It tests a real web app flow (SauceDemo) using behavior-driven scenarios and generates HTML test reports.
+## What this project demonstrates
 
-## Overview
+- Behaviour-driven development with business-readable feature files
+- Page Object Model with UI selectors separated from scenarios
+- Chrome and Firefox execution through Selenium Manager
+- Thread-safe WebDriver lifecycle using `ThreadLocal`
+- Explicit waits instead of fixed sleeps
+- Failure screenshots embedded in Cucumber reports
+- GitHub Actions and Jenkins pipeline support
+- Environment-driven URLs and credentials
+- HTML, JSON and JUnit-compatible reports
 
-The framework is designed to validate end-to-end user behaviors in a readable format using Gherkin feature files. Each scenario maps to step definitions and page objects, keeping test logic separated from business behavior and UI selectors.
+## Test coverage
+
+| Area | Scenarios |
+| --- | --- |
+| Authentication | Valid, invalid, locked-out, empty and performance-glitch users |
+| Shopping | Add and remove a product, cart badge validation |
+| Session | Successful logout |
+| Checkout | Multi-product purchase and checkout cancellation |
 
 ## Project structure
 
-- `src/test/resources/features/` - Cucumber feature files
-- `src/test/java/dev/ashish/qa/pages/` - Page Object classes
-- `src/test/java/dev/ashish/qa/steps/` - Step definitions
-- `src/test/java/dev/ashish/qa/hooks/` - Browser setup/teardown and failure capture
-- `src/test/java/dev/ashish/qa/support/` - Shared test context
-- `src/test/java/dev/ashish/qa/runner/` - Cucumber/JUnit runner
-- `pom.xml` - Maven dependencies and plugins
-
-## Prerequisites
-
-Before running the tests, ensure the following are installed:
-
-- Java 17+
-- Maven 3.9+
-- Google Chrome (latest stable)
-- ChromeDriver matching your Chrome version
+```text
+.
+├── .github/workflows/          # Chrome and Firefox CI
+├── src/test/java/
+│   └── dev/ashish/qa/
+│       ├── hooks/              # Browser lifecycle and screenshots
+│       ├── pages/              # Page Object Model
+│       ├── runner/             # JUnit Platform suite
+│       ├── steps/              # Cucumber step definitions
+│       └── support/            # Shared context and configuration
+├── src/test/resources/features # Gherkin scenarios
+├── Jenkinsfile                 # Jenkins pipeline
+└── pom.xml                     # Maven build
+```
 
 ## Run locally
 
-From the project root:
+Prerequisites: Java 17+, Maven 3.9+ and Chrome or Firefox.
+
+Selenium Manager resolves compatible browser drivers automatically, so a separate ChromeDriver or GeckoDriver installation is normally unnecessary.
 
 ```bash
+git clone https://github.com/ashishbsdet-sketch/selenium-java-automation.git
+cd selenium-java-automation
 mvn clean test
 ```
 
-You can also run a specific build without cleaning:
+Run in Firefox:
 
 ```bash
-mvn test
+BROWSER=firefox mvn clean test
 ```
 
-## Reports
-
-After the test run, reports are generated in the `target` directory.
-
-- Cucumber HTML report: `target/cucumber-report.html`
-- JSON report: `target/cucumber.json`
-- Rich HTML suite: `target/cucumber-html-reports/cucumber-html-reports/`
-
-Open the generated HTML report in a browser to view the result details and failure screenshots.
-
-## Browser handling
-
-The framework launches Chrome in a clean browser session and disables password-manager prompts to avoid flaky UI interruptions during automation.
-
-Failure screenshots are attached automatically in the Cucumber hook and included in the HTML report for failed scenarios.
-
-## Example flow covered
-
-The project includes scenarios for:
-
-- login success/failure
-- locked-out users
-- invalid or empty credentials
-- cart add/remove flow
-- logout flow
-- checkout completion and cancellation
-
-## Jenkins CI/CD
-
-A Jenkins pipeline file is included at the repository root as `Jenkinsfile`.
-
-The pipeline performs the following:
-
-1. Checks out the repo
-2. Installs Java and Maven dependencies if needed
-3. Runs `mvn test`
-4. Publishes the generated HTML and Cucumber reports
-
-You can configure a Jenkins job to use this file as a Pipeline script from SCM or direct pipeline source.
-
-## Useful commands
+Run a tagged suite:
 
 ```bash
-# Clean and run all tests
-mvn clean test
-
-# Re-run without rebuilding
-mvn test
-
-# View generated report
-open target/cucumber-report.html
+mvn test -Dcucumber.filter.tags="@smoke"
 ```
 
-## Notes
+## Configuration
 
-- This project uses the Page Object Model for maintainability.
-- Gherkin steps are easy to read for manual QA and automation alike.
-- The setup is CI-friendly and suitable for Jenkins, GitHub Actions, or other build systems.
+| Variable | Purpose | Default |
+| --- | --- | --- |
+| `BASE_URL` | Application under test | `https://www.saucedemo.com` |
+| `TEST_USERNAME` | Valid test account | `standard_user` |
+| `TEST_PASSWORD` | Valid test password | `secret_sauce` |
+| `BROWSER` | `chrome` or `firefox` | `chrome` |
+
+The defaults are public Sauce Demo training credentials. For real applications, configure protected CI secrets rather than storing credentials in feature files or source code.
+
+## Reports and debugging
+
+After execution:
+
+- Cucumber HTML: `target/cucumber-report.html`
+- Enhanced Cucumber report: `target/cucumber-html-reports/`
+- JUnit results: `target/surefire-reports/`
+
+When a scenario fails, the browser hook captures a screenshot and attaches it to the Cucumber report. Generated reports remain available as CI artifacts but are intentionally excluded from source control.
+
+## CI design
+
+GitHub Actions executes the complete regression suite independently in Chrome and Firefox. Maven dependencies are cached, browser jobs do not fail fast, and reports are retained even when a test fails. The Jenkins pipeline provides the same browser choice for teams using Jenkins.
+
+## Design decisions
+
+- Gherkin describes customer outcomes rather than Selenium operations.
+- Page objects own locators and browser interactions.
+- Explicit waits are used only at synchronization boundaries.
+- Each scenario receives an isolated browser session.
+- Browser and environment selection remain outside feature files.
+
+## Roadmap
+
+- Introduce scenario-level parallel execution
+- Add API-assisted test-data setup
+- Add accessibility validation
+- Add containerized execution with Selenium Grid
+
+## Disclaimer
+
+Sauce Demo is a public training application. This repository is an independent portfolio project and is not affiliated with Sauce Labs.

@@ -1,0 +1,66 @@
+name: Selenium Cucumber Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: selenium-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: ${{ matrix.browser }} regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome, firefox]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: maven
+
+      - name: Run Cucumber regression
+        env:
+          CI: "true"
+          BROWSER: ${{ matrix.browser }}
+          BASE_URL: ${{ secrets.BASE_URL || 'https://www.saucedemo.com' }}
+          TEST_USERNAME: ${{ secrets.TEST_USERNAME || 'standard_user' }}
+          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD || 'secret_sauce' }}
+        run: mvn --batch-mode --no-transfer-progress clean test
+
+      - name: Publish JUnit results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-${{ matrix.browser }}-${{ github.run_number }}
+          path: target/surefire-reports/
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Publish Cucumber report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cucumber-report-${{ matrix.browser }}-${{ github.run_number }}
+          path: |
+            target/cucumber-report.html
+            target/cucumber-html-reports/
+          if-no-files-found: ignore
+          retention-days: 14

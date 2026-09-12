@@ -8,14 +8,14 @@ Feature: Customer authentication
     Given the customer is on the login page
 
   Scenario: Standard user signs in successfully
-    When the customer signs in with username "standard_user" and password "secret_sauce"
+    When the customer signs in with valid credentials
     Then the product inventory should be displayed
 
   Scenario: Invalid credentials are rejected
     When the customer signs in with username "invalid_user" and password "wrong_password"
     Then an authentication error should be displayed
 
-  Scenario: Locked out user is rejected
+  Scenario: Locked-out customer cannot sign in
     When the customer signs in with username "locked_out_user" and password "secret_sauce"
     Then an authentication error should be displayed
 
@@ -23,7 +23,6 @@ Feature: Customer authentication
     When the customer signs in with username "" and password ""
     Then an authentication error should be displayed
 
-  Scenario: Performance glitch user signs in successfully
+  Scenario: Performance-glitch customer can sign in
     When the customer signs in with username "performance_glitch_user" and password "secret_sauce"
     Then the product inventory should be displayed
-
