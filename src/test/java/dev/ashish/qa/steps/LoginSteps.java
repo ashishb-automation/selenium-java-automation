@@ -1,12 +1,11 @@
 package dev.ashish.qa.steps;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import dev.ashish.qa.support.Configuration;
 import dev.ashish.qa.support.TestContext;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.testng.Assert;
 
 public class LoginSteps {
     @Given("the customer is on the login page")
@@ -26,11 +25,11 @@ public class LoginSteps {
 
     @Then("the product inventory should be displayed")
     public void verifyInventory() {
-        assertTrue(TestContext.loginPage().inventoryIsVisible());
+        Assert.assertTrue(TestContext.loginPage().inventoryIsVisible());
     }
 
     @Then("an authentication error should be displayed")
     public void verifyError() {
-        assertTrue(TestContext.loginPage().authenticationErrorIsVisible());
+        Assert.assertTrue(TestContext.loginPage().authenticationErrorIsVisible());
     }
 }

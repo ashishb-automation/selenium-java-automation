@@ -1,10 +1,9 @@
 package dev.ashish.qa.steps;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import dev.ashish.qa.support.TestContext;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.testng.Assert;
 
 public class InventorySteps {
     @When("the customer adds {string} to the cart")
@@ -29,11 +28,11 @@ public class InventorySteps {
 
     @Then("the cart badge should display {int}")
     public void verifyCartBadge(int expectedCount) {
-        assertEquals(expectedCount, TestContext.inventoryPage().cartItemCount());
+        Assert.assertEquals(TestContext.inventoryPage().cartItemCount(), expectedCount);
     }
 
     @Then("the login page should be displayed")
     public void verifyLoginPage() {
-        assertTrue(TestContext.loginPage().loginButtonIsVisible());
+        Assert.assertTrue(TestContext.loginPage().loginButtonIsVisible());
     }
 }

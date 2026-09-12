@@ -1,9 +1,9 @@
 package dev.ashish.qa.steps;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import dev.ashish.qa.support.TestContext;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.testng.Assert;
 
 public class CheckoutSteps {
     @When("the customer adds multiple products to the cart")
@@ -41,21 +41,21 @@ public class CheckoutSteps {
 
     @Then("the checkout overview should be displayed")
     public void verifyOverview() {
-        assertTrue(TestContext.checkoutPage().overviewIsVisible());
+        Assert.assertTrue(TestContext.checkoutPage().overviewIsVisible());
     }
 
     @Then("the order confirmation should be displayed")
     public void verifyConfirmation() {
-        assertTrue(TestContext.checkoutPage().orderConfirmed());
+        Assert.assertTrue(TestContext.checkoutPage().orderConfirmed());
     }
 
     @Then("the cart page should be displayed")
     public void verifyCartPage() {
-        assertTrue(TestContext.cartPage().cartIsVisible());
+        Assert.assertTrue(TestContext.cartPage().cartIsVisible());
     }
 
     @Then("the inventory page should be displayed")
     public void verifyInventoryPage() {
-        assertTrue(TestContext.inventoryPage().inventoryIsVisible());
+        Assert.assertTrue(TestContext.inventoryPage().inventoryIsVisible());
     }
 }

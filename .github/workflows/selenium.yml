@@ -37,6 +37,8 @@ jobs:
           cache: maven
 
       - name: Run Cucumber regression
+        id: selenium_tests
+        continue-on-error: true
         env:
           CI: "true"
           BROWSER: ${{ matrix.browser }}
@@ -44,6 +46,13 @@ jobs:
           TEST_USERNAME: ${{ secrets.TEST_USERNAME || 'standard_user' }}
           TEST_PASSWORD: ${{ secrets.TEST_PASSWORD || 'secret_sauce' }}
         run: mvn --batch-mode --no-transfer-progress clean test
+
+      - name: Publish test counts
+        id: test_summary
+        if: always()
+        env:
+          BROWSER: ${{ matrix.browser }}
+        run: python3 .github/scripts/publish_test_summary.py
 
       - name: Publish JUnit results
         if: always()
@@ -64,3 +73,9 @@ jobs:
             target/cucumber-html-reports/
           if-no-files-found: ignore
           retention-days: 14
+
+      - name: Fail workflow when tests fail
+        if: steps.selenium_tests.outcome == 'failure'
+        run: |
+          echo "::error title=${{ matrix.browser }} regression failed::${{ steps.test_summary.outputs.failed }} failed, ${{ steps.test_summary.outputs.passed }} passed"
+          exit 1
