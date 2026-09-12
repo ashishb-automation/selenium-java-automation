@@ -13,6 +13,10 @@ public class BrowserHooks {
     @Before
     public void startBrowser() {
         ChromeOptions options = new ChromeOptions();
+        options.addArguments("--incognito");
+        options.addArguments("--disable-features=PasswordLeakDetection,PasswordManagerOnboarding");
+        options.addArguments("--disable-save-password-bubble");
+        options.addArguments("--disable-notifications");
         if (System.getenv("CI") != null) options.addArguments("--headless=new", "--no-sandbox", "--disable-dev-shm-usage");
         TestContext.setDriver(new ChromeDriver(options));
     }

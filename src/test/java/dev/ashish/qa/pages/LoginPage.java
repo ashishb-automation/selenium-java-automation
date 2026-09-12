@@ -23,5 +23,6 @@ public class LoginPage {
     public void signIn(String user, String pass) { driver.findElement(username).sendKeys(user); driver.findElement(password).sendKeys(pass); driver.findElement(loginButton).click(); }
     public boolean inventoryIsVisible() { return wait.until(ExpectedConditions.textToBe(pageTitle, "Products")); }
     public boolean authenticationErrorIsVisible() { return wait.until(ExpectedConditions.visibilityOfElementLocated(error)).isDisplayed(); }
+    public boolean loginButtonIsVisible() { return wait.until(ExpectedConditions.visibilityOfElementLocated(loginButton)).isDisplayed(); }
 }
 
