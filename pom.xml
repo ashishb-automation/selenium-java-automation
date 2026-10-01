@@ -11,7 +11,7 @@
   <properties>
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <cucumber.version>7.27.2</cucumber.version>
+    <cucumber.version>8.0.2</cucumber.version>
     <testng.version>7.11.0</testng.version>
   </properties>
 
